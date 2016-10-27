@@ -1,13 +1,13 @@
-class Experiment {
+class Simulator {
 
     constructor(options = {}) {
         this.options = {};
         this.params = {};
-        this.simulationFunction = (() => {});
+        this.experimentFunction = (() => {});
         this.aggregateFunction = (() => {});
         this.result = {};
 
-        this.simulationContext = {
+        this.experimentContext = {
             random: (dimension = 1) => (min = 0, max = 1) => {
                 let result = [];
                 for(let i = 0;i < dimension;i++) {
@@ -25,8 +25,8 @@ class Experiment {
         return this;
     }
 
-    simulation(simulationFunction) {
-        this.simulationFunction = simulationFunction;
+    experiment(experimentFunction) {
+        this.experimentFunction = experimentFunction;
         return this;
     }
 
@@ -36,13 +36,13 @@ class Experiment {
     }
 
     run(times = 1) {
-        this.simulationContext.iterations += times;
+        this.experimentContext.iterations += times;
         for(let i = 0;i < times;i++) {
-            this.simulationFunction(
-                this.params, this.simulationContext);
+            this.experimentFunction(
+                this.params, this.experimentContext);
         }
         this.result = this.aggregateFunction(
-            this.params, this.simulationContext);
+            this.params, this.experimentContext);
 
         return this;
     }
@@ -53,17 +53,3 @@ class Experiment {
     }
 
 }
-
-let experiment = new Experiment()
-    .parameters({
-        hits: 0
-    })
-    .simulation((parameters, { random }) => {
-        let [ x, y ] = random(2)();
-        if(Math.sqrt(x * x + y * y) < 1) {
-            parameters.hits++;
-        }
-    })
-    .aggregate(({ hits }, { iterations }) => hits / iterations * 4)
-    .run(30000)
-    .print('Estimation of PI:');
