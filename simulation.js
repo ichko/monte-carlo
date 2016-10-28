@@ -1,4 +1,4 @@
-class Simulator {
+class Simulation {
 
     constructor(options = {}) {
         this.options = {};

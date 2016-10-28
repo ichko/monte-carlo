@@ -6,7 +6,7 @@
 
 # Simulation runner
 ```javascript
-let simulator = new Simulator()
+let simulation = new Simulation()
 
     .parameters({
         hits: 0
