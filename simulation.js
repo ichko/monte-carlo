@@ -35,9 +35,9 @@ class Simulation {
         return this;
     }
 
-    run(times = 1) {
-        this.experimentContext.iterations += times;
-        for(let i = 0;i < times;i++) {
+    run(totalIterations = 1) {
+        this.experimentContext.iterations += totalIterations;
+        for(let i = 0;i < totalIterations;i++) {
             this.experimentFunction(
                 this.params, this.experimentContext);
         }
