@@ -2,10 +2,16 @@ class Simulation {
 
     constructor(options = {}) {
         this.options = {};
-        this.params = {};
-        this.experimentFunction = (() => {});
-        this.aggregateFunction = (() => {});
-        this.result = {};
+        this.interval = undefined;
+        this.intervalTime = 1;
+
+        this.buildSimulation();
+    }
+
+    buildSimulation() {
+        this.parametersGetter = (() => {});
+        this.experiment = (() => {});
+        this.aggregate = (() => {});
 
         this.experimentContext = {
             random: (dimension = 1) => (min = 0, max = 1) => {
@@ -16,59 +22,70 @@ class Simulation {
 
                 return result;
             },
-            iterations: 0,
+            iterations: 1,
+            iteration: 0,
+            experimentCount: 0,
             histograma: {},
             stats: { histograma: {} }
         };
     }
 
-    parameters(params) {
-        this.params = params;
+    setIterations(iterations) {
+        this.experimentContext.iterations = iterations;
         return this;
     }
 
-    experiment(experimentFunction) {
-        this.experimentFunction = experimentFunction;
+    setParameters(parametersGetter) {
+        this.parametersGetter = parametersGetter;
         return this;
     }
 
-    aggregate(aggregateFunction) {
-        this.aggregateFunction = aggregateFunction;
+    setExperiment(experiment) {
+        this.experiment = experiment;
         return this;
+    }
+
+    setAggregate(aggregate) {
+        this.aggregate = aggregate;
+        return this;
+    }
+
+    static setter(object, handler, initial) {
+        if(object) {
+            handler(object !== undefined);
+        }
+        else object = initial;
     }
 
     collectStats() {
         for(let paramName in this.experimentContext.histograma) {
-            let hystogramaResult = this.experimentContext.histograma[paramName];
-            if(hystogramaResult) {
-                if(!this.experimentContext.stats.histograma[paramName]) {
-                    this.experimentContext.stats.histograma[paramName] = {};
-                }
-
-                if(this.experimentContext.stats.histograma[paramName][hystogramaResult] !== undefined) {
-                    this.experimentContext.stats.histograma[paramName][hystogramaResult]++;
-                } else {
-                    this.experimentContext.stats.histograma[paramName][hystogramaResult] = 0;
-                }
-            }
+            setter(this.experimentContext.stats.histograma[paramName],
+                (singleHistograma) => setter(singleHistograma,
+                    (value) => value++, 0), {});
         }
     }
 
-    run(totalIterations = 1) {
-        this.experimentContext.iterations += totalIterations;
-        for(let i = 0;i < totalIterations;i++) {
-            this.experimentFunction(
-                this.params, this.experimentContext);
-            this.collectStats();
-        }
-        this.result = this.aggregateFunction(
-            this.params, this.experimentContext);
-
+    runWhile(handler) {
+        this.interval = setInterval(() => {
+            if(handler(this.parameters, this.experimentContext)) {
+                this.singleRun(this.parametersGetter());
+                this.experimentContext.experimentCount++;
+            } else {
+                clearInterval(this.interval);
+            }
+        }, 0);
+        
         return this;
     }
 
-    print(message) {
-        console.log(message, this.result);
+    singleRun(parameters) {
+        for(let i = 0;i < this.experimentContext.iterations;i++) {
+            this.experiment(parameters, this.experimentContext);
+            this.collectStats();
+            this.experimentContext.iteration++;
+        }
+        this.aggregate(parameters, this.experimentContext);
+
         return this;
     }
 
