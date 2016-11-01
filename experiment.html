@@ -17,8 +17,9 @@
                 })
 
                 .setAggregate(({ hits }, { iterations }) => {
-                    let pi = hits / iterations * 4;
-                    console.log(Math.PI - pi);
+                    let tuple = [Math.PI, hits / iterations * 4];
+                    let [ max, min ] = [Math.max(...tuple), Math.min(...tuple)];
+                    console.log(max / min * 100);
                 })
                 
                 .setIterations(30000)
