@@ -14,9 +14,9 @@
 
                 .aggregate((_, {
                     iterations,
-                    stats: { histograma: hits }
+                    stats: { histograma }
                 }) => {
-                    return hits[true] / iterations * 4
+                    return histograma.hits[true] / iterations * 4
                 })
 
                 .run(30000)

@@ -41,10 +41,14 @@ class Simulation {
         for(let paramName in this.experimentContext.histograma) {
             let hystogramaResult = this.experimentContext.histograma[paramName];
             if(hystogramaResult) {
-                if(this.experimentContext.stats.histograma[hystogramaResult] !== undefined) {
-                    this.experimentContext.stats.histograma[hystogramaResult]++;
+                if(!this.experimentContext.stats.histograma[paramName]) {
+                    this.experimentContext.stats.histograma[paramName] = {};
+                }
+
+                if(this.experimentContext.stats.histograma[paramName][hystogramaResult] !== undefined) {
+                    this.experimentContext.stats.histograma[paramName][hystogramaResult]++;
                 } else {
-                    this.experimentContext.stats.histograma[hystogramaResult] = 0;
+                    this.experimentContext.stats.histograma[paramName][hystogramaResult] = 0;
                 }
             }
         }
