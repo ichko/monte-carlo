@@ -7,20 +7,16 @@
         <script>
 
             let simulation = new Simulation()
-
-                .parameters({
-                    hits: 0
-                })
-
-                .experiment((parameters, { random }) => {
+                .experiment((_, { random, histograma }) => {
                     let [ x, y ] = random(2)();
-                    if(Math.sqrt(x * x + y * y) < 1) {
-                        parameters.hits++;
-                    }
+                    histograma.hits = Math.sqrt(x * x + y * y) < 1;
                 })
 
-                .aggregate(({ hits }, { iterations }) => {
-                    return hits / iterations * 4
+                .aggregate((_, {
+                    iterations,
+                    stats: { histograma: hits }
+                }) => {
+                    return hits[true] / iterations * 4
                 })
 
                 .run(30000)

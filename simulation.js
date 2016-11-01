@@ -16,7 +16,9 @@ class Simulation {
 
                 return result;
             },
-            iterations: 0
+            iterations: 0,
+            histograma: {},
+            stats: { histograma: {} }
         };
     }
 
@@ -35,11 +37,25 @@ class Simulation {
         return this;
     }
 
+    collectStats() {
+        for(let paramName in this.experimentContext.histograma) {
+            let hystogramaResult = this.experimentContext.histograma[paramName];
+            if(hystogramaResult) {
+                if(this.experimentContext.stats.histograma[hystogramaResult] !== undefined) {
+                    this.experimentContext.stats.histograma[hystogramaResult]++;
+                } else {
+                    this.experimentContext.stats.histograma[hystogramaResult] = 0;
+                }
+            }
+        }
+    }
+
     run(totalIterations = 1) {
         this.experimentContext.iterations += totalIterations;
         for(let i = 0;i < totalIterations;i++) {
             this.experimentFunction(
                 this.params, this.experimentContext);
+            this.collectStats();
         }
         this.result = this.aggregateFunction(
             this.params, this.experimentContext);
