@@ -13,18 +13,18 @@
 
                 .setExperiment((params, { random }) => {
                     let [ x, y ] = random(2)();
-                    params.hits += Math.sqrt(x * x + y * y) < 1;
+                    params.hits += Math.sqrt(x ** 2 + y ** 2) < 1;
                 })
 
                 .setAggregate(({ hits }, { iterations }) => {
-                    let pi = hits / iterations * 4,
-                        tuple = [Math.PI, pi],
-                        [ max, min ] = [Math.max(...tuple), Math.min(...tuple)];
-                    console.log(`${ (max / min * 100).toFixed(2) }%, estimated value of PI ${ pi }`);
+                    let pi = hits / iterations * 4;
+                    console.log(`${ pi.toFixed(4) } - estimated value of PI`);
                 })
-                
+
                 .setIterations(30000)
-                .runWhile((_, { experimentCount }) => experimentCount < 10);
+
+                .runWhile((_, { experimentCount }) =>
+                    experimentCount < 10);
 
         </script>
     </body>
