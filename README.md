@@ -7,22 +7,22 @@
 # Simulation runner
 ```javascript
 let simulation = new Simulation()
-
-    .parameters({
+    .setParameters(() => ({
         hits: 0
-    })
+    }))
 
-    .experiment((parameters, { random }) => {
+    .setExperiment((params, { random }) => {
         let [ x, y ] = random(2)();
-        if(Math.sqrt(x * x + y * y) < 1) {
-            parameters.hits++;
-        }
+        params.hits += Math.sqrt(x ** 2 + y ** 2) < 1;
     })
 
-    .aggregate(({ hits }, { iterations }) => {
-        return hits / iterations * 4
+    .setAggregate(({ hits }, { iterations }) => {
+        let pi = hits / iterations * 4;
+        console.log(`${ pi.toFixed(4) } - estimated value of PI`);
     })
 
-    .run(30000)
-    .print('Estimation of PI:'); // Estimation of PI: 3.1448
+    .setIterations(30000)
+
+    .runWhile((_, { experimentCount }) =>
+        experimentCount < 10);
 ```
