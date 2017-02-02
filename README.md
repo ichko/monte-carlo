@@ -1,9 +1,5 @@
 # Monte Carlo experiments
 
-# Useful links
- - https://www.khanacademy.org/partner-content/lebron-asks-subject/lebron-asks/v/monte-carlo-simulation-to-answer-lebron-s-question
- - https://en.wikipedia.org/wiki/Monte_Carlo_method#Introduction
-
 # Simulation runner
 ```javascript
 let simulation = new Simulation()
@@ -26,3 +22,7 @@ let simulation = new Simulation()
     .runWhile((_, { experimentCount }) =>
         experimentCount < 10);
 ```
+
+# Useful links
+ - https://www.khanacademy.org/partner-content/lebron-asks-subject/lebron-asks/v/monte-carlo-simulation-to-answer-lebron-s-question
+ - https://en.wikipedia.org/wiki/Monte_Carlo_method#Introduction
